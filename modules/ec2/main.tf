@@ -196,6 +196,49 @@ resource "aws_instance" "db_6" {
   }
 }
 
+# Auto Scaling Launch Configuration for Web Servers
+resource "aws_launch_configuration" "web_lc" {
+  name            = "${var.vpc_prod}-WebServer-LC"
+  image_id        = data.aws_ami.amazon_linux_2.id
+  instance_type   = var.instance_type
+  security_groups = [aws_security_group.web_sg.id]
+  key_name               = "web_key"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl start httpd.service
+    systemctl enable httpd.service
+    echo "<html><h1>Welcome to Auto Scaling Group Web Page</h1></html>" > /var/www/html/index.html
+  EOF
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Auto Scaling Group for Web Servers
+resource "aws_autoscaling_group" "web_asg" {
+  name                 = "${var.vpc_prod}-WebServer-ASG"
+  launch_configuration = aws_launch_configuration.web_lc.id
+  vpc_zone_identifier  = data.aws_subnets.public_subnets.ids
+  min_size             = var.min_size
+  max_size             = var.max_size
+  desired_capacity     = var.desired_capacity
+
+  tag {
+    key                 = "Name"
+    value               = "${var.vpc_prod}-WebServer-ASG"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Environment"
+    value               = var.prod
+    propagate_at_launch = true
+  }
+}
+
 
 resource "aws_key_pair" "bastion" {
   key_name   = "bastion_key"

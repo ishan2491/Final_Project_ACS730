@@ -1,0 +1,9 @@
+# Ignore all .terraform directories and their contents
+.terraform/
+
+# Ignore all SSH private keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+

@@ -80,4 +80,131 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
+# Web Server 1
+resource "aws_instance" "web_1" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.public_subnets.ids[3]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "web_key"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl start httpd.service
+    systemctl enable httpd.service
+    echo "<html><h1>Welcome to VM1 Web Page</h1></html>" > /var/www/html/index.html
+  EOF
+
+  tags = {
+    Name        = "${var.vpc_prod}-WebServer-1"
+    Environment = var.prod
+  }
+}
+
+# Bastion Host (VM2)
+resource "aws_instance" "bastion" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.public_subnets.ids[2]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "bastion_key"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl start httpd.service
+    systemctl enable httpd.service
+    echo "<html><h1>Welcome to VM2 Bastion Host</h1></html>" > /var/www/html/index.html
+  EOF
+
+  tags = {
+    Name        = "${var.vpc_prod}-BastionHost"
+    Environment = var.prod
+  }
+}
+
+# Web Server 3
+resource "aws_instance" "web_3" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.public_subnets.ids[1]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "web_key"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl start httpd.service
+    systemctl enable httpd.service
+    echo "<html><h1>Welcome to VM3 Web Page</h1></html>" > /var/www/html/index.html
+  EOF
+
+  tags = {
+    Name        = "${var.vpc_prod}-WebServer-3"
+    Environment = var.prod
+  }
+}
+
+# Web Server 4
+resource "aws_instance" "web_4" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.public_subnets.ids[0]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "web_key"
+
+  user_data = <<-EOF
+    #!/bin/bash
+    yum install -y httpd
+    systemctl start httpd.service
+    systemctl enable httpd.service
+    echo "<html><h1>Welcome to VM4 Web Page</h1></html>" > /var/www/html/index.html
+  EOF
+
+  tags = {
+    Name        = "${var.vpc_prod}-WebServer-4"
+    Environment = var.prod
+  }
+}
+
+# Database Server 5 (Private Subnet)
+resource "aws_instance" "db_5" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.private_subnets.ids[1]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "bastion_key"
+
+  tags = {
+    Name        = "${var.vpc_prod}-DatabaseServer-5"
+    Environment = var.prod
+  }
+}
+
+# Database Server 6 (Private Subnet)
+resource "aws_instance" "db_6" {
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = data.aws_subnets.private_subnets.ids[0]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  key_name               = "bastion_key"
+
+  tags = {
+    Name        = "${var.vpc_prod}-DatabaseServer-6"
+    Environment = var.prod
+  }
+}
+
+
+resource "aws_key_pair" "bastion" {
+  key_name   = "bastion_key"
+  public_key = file("${path.module}/bastion_key.pub")
+}
+
+
+resource "aws_key_pair" "web" {
+  key_name   = "web_key"
+  public_key = file("${path.module}/web_key.pub")
+}
 

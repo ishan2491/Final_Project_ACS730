@@ -4,6 +4,17 @@ output "web_server_1_public_ip" {
   value       = aws_instance.web_1.public_ip
 }
 
+output "web_server_1_id" {
+  description = "ID of Web Server 1"
+  value       = aws_instance.web_1.id
+}
+
+output "web_server_3_id" {
+  description = "ID of Web Server 3"
+  value       = aws_instance.web_3.id
+}
+
+
 output "web_server_3_public_ip" {
   description = "Public IP of Web Server 3"
   value       = aws_instance.web_3.public_ip
@@ -34,4 +45,5 @@ output "bastion_host_id" {
   description = "ID of the Bastion Host"
   value       = aws_instance.bastion.id
 }
+
 

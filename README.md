@@ -17,11 +17,11 @@ This repository contains the code for provisioning and configuring a two-tier we
   Example (using AWS CLI):
   ```bash
   aws s3 mb s3://final-project-acs730-yourname --region us-east-1
-Configuration:
-In the root module’s main.tf, the backend is configured as follows:
 
-hcl
-Copy
+### Configuration:
+In the root module’s `main.tf`, configure the backend as follows:
+
+```hcl
 terraform {
   backend "s3" {
     bucket  = "final-project-acs730-yourname"
@@ -30,16 +30,14 @@ terraform {
     encrypt = true
   }
 }
-Website Images (S3 Bucket for Images)
-Purpose: Store images for the web server (image will be displayed on the website).
 
-Action: Create a separate S3 bucket for images, ensuring it is not public.
-Example:
+### Website Images (S3 Bucket for Images)
+- **Purpose:** Store images to be displayed on the website.
+- **Action:** Create a separate S3 bucket for images, ensuring it is not public.
 
-bash
-Copy
-aws s3 mb s3://your-website-images-bucket --region us-east-1
-Note: Manually upload the website images using the AWS Console or CLI.
+  _Example:_
+  ```bash
+  aws s3 mb s3://your-website-images-bucket --region us-east-1
 
 SSH Key Pairs
 Purpose: Securely access your EC2 instances.

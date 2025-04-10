@@ -32,3 +32,18 @@ output "bastion_host_id" {
   description = "ID of the Bastion Host"
   value       = module.ec2.bastion_host_id
 }
+
+output "alb_dns_name" {
+  description = "DNS name of the ALB"
+  value       = module.alb.alb_dns_name
+}
+
+output "target_group_arn" {
+  description = "Target Group ARN"
+  value       = module.alb.target_group_arn
+}
+
+output "listener_arn" {
+  description = "ALB Listener ARN"
+  value       = module.alb.listener_arn
+}

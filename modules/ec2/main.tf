@@ -84,7 +84,7 @@ resource "aws_security_group" "web_sg" {
 resource "aws_instance" "web_1" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.public_subnets.ids[3]
+  subnet_id              = data.aws_subnets.public_subnets.ids[1]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "web_key"
 
@@ -106,7 +106,7 @@ resource "aws_instance" "web_1" {
 resource "aws_instance" "bastion" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.public_subnets.ids[2]
+  subnet_id              = data.aws_subnets.public_subnets.ids[0]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "bastion_key"
 
@@ -128,7 +128,7 @@ resource "aws_instance" "bastion" {
 resource "aws_instance" "web_3" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.public_subnets.ids[1]
+  subnet_id              = data.aws_subnets.public_subnets.ids[3]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "web_key"
 
@@ -143,6 +143,7 @@ resource "aws_instance" "web_3" {
   tags = {
     Name        = "${var.vpc_prod}-WebServer-3"
     Environment = var.prod
+    ConfigureViaAnsible = "Yes"
   }
 }
 
@@ -150,7 +151,7 @@ resource "aws_instance" "web_3" {
 resource "aws_instance" "web_4" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.public_subnets.ids[0]
+  subnet_id              = data.aws_subnets.public_subnets.ids[2]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "web_key"
 
@@ -165,6 +166,7 @@ resource "aws_instance" "web_4" {
   tags = {
     Name        = "${var.vpc_prod}-WebServer-4"
     Environment = var.prod
+    ConfigureViaAnsible = "Yes"
   }
 }
 
@@ -172,7 +174,7 @@ resource "aws_instance" "web_4" {
 resource "aws_instance" "db_5" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.private_subnets.ids[1]
+  subnet_id              = data.aws_subnets.private_subnets.ids[0]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "bastion_key"
 
@@ -186,7 +188,7 @@ resource "aws_instance" "db_5" {
 resource "aws_instance" "db_6" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnets.private_subnets.ids[0]
+  subnet_id              = data.aws_subnets.private_subnets.ids[1]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
   key_name               = "bastion_key"
 

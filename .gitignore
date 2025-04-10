@@ -1,9 +1,14 @@
-# Ignore all .terraform directories and their contents
-.terraform/
+# Ignore Cloud9 IDE and metadata
+.c9/
 
-# Ignore all SSH private keys
+# Ignore Terraform state and cache files
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Ignore SSH key files
 *.pem
 *.key
-id_rsa
-id_rsa.pub
 
+# Ignore other temporary files
+*.swp

@@ -15,18 +15,18 @@ provider "aws" {
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
-    bucket = "final-project-acs730-ishan"  # Same S3 bucket where the VPC state is stored
-    key    = "vpc/terraform.tfstate"         # Path to the VPC state file
+    bucket = "final-project-acs730-ishan" # Same S3 bucket where the VPC state is stored
+    key    = "vpc/terraform.tfstate"      # Path to the VPC state file
     region = "us-east-1"
   }
 }
 
 # Call EC2 Module using the VPC details obtained from remote state.
 module "ec2" {
-  source         = "./modules/ec2"
+  source = "./modules/ec2"
 
-  vpc_id         = data.terraform_remote_state.vpc.outputs.vpc_id
-  public_subnets = data.terraform_remote_state.vpc.outputs.public_subnets
+  vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
+  public_subnets  = data.terraform_remote_state.vpc.outputs.public_subnets
   private_subnets = data.terraform_remote_state.vpc.outputs.private_subnets
 
   instance_type    = "t2.micro"
@@ -38,22 +38,22 @@ module "ec2" {
 
 # Call ALB Module using the VPC outputs from remote state.
 module "alb" {
-  source             = "./modules/alb"
-  vpc_id             = data.terraform_remote_state.vpc.outputs.vpc_id
-  public_subnets     = data.terraform_remote_state.vpc.outputs.public_subnets
-  lb_name            = "ProdALB"
-  environment        = "Prod"
-  listener_port      = 80
-  listener_protocol  = "HTTP"
-  target_group_name  = "ProdTargetGroup"
-  target_group_port  = 80
+  source                = "./modules/alb"
+  vpc_id                = data.terraform_remote_state.vpc.outputs.vpc_id
+  public_subnets        = data.terraform_remote_state.vpc.outputs.public_subnets
+  lb_name               = "ProdALB"
+  environment           = "Prod"
+  listener_port         = 80
+  listener_protocol     = "HTTP"
+  target_group_name     = "ProdTargetGroup"
+  target_group_port     = 80
   target_group_protocol = "HTTP"
-  target_type        = "instance"
-  health_check_path  = "/"
+  target_type           = "instance"
+  health_check_path     = "/"
   health_check_protocol = "HTTP"
   health_check_interval = 30
-  healthy_threshold  = 3
-  unhealthy_threshold = 3
+  healthy_threshold     = 3
+  unhealthy_threshold   = 3
 }
 
 # Attach Web Server 1 and Web Server 3 to the ALB Target Group.

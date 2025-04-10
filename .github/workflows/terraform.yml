@@ -10,12 +10,18 @@ on:
 
 jobs:
   terraform:
-    name: "Terraform Plan and Security Scan"
     runs-on: ubuntu-latest
-
+    name: "Terraform Plan and Security Scan"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Configure AWS credentials using static secrets
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -37,11 +43,14 @@ jobs:
       - name: Install TFLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
       - name: Run TFLint
         run: tflint
 
-      - name: Run Trivy Security Scan on Terraform Directory
+      - name: Install Trivy
         run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.35.0/trivy_0.35.0_Linux-64bit.deb
           sudo dpkg -i trivy_0.35.0_Linux-64bit.deb
-          trivy fs .
+
+      - name: Run Trivy Security Scan on Terraform Directory
+        run: trivy fs .

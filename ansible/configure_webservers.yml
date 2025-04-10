@@ -1,0 +1,31 @@
+---
+- name: Configure Web Servers (Web Server 3 and 4)
+  hosts: configure_Yes
+  become: yes
+  tasks:
+    - name: Install Apache HTTP Server
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and Enable Apache Service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Update index.html with project info
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <head>
+              <title>Ansible Playbooks</title>
+            </head>
+            <body>
+              <h1>Welcome to Web Server 3 and 4</h1>
+              <p>Team Members: Ishan Aakash Patel</p>
+              <p>Student ID : 146151238</p>
+              <p>Project: ACS730 Final Project</p>
+            </body>
+          </html>

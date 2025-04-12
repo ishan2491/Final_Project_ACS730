@@ -12,3 +12,6 @@
 
 # Ignore other temporary files
 *.swp
+
+# Ignore Terraform lock file
+.terraform.lock.hcl

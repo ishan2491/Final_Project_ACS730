@@ -146,33 +146,68 @@ This provisions the remainder of your infrastructure including EC2 instances, AL
 
 Configure the aws_ec2.yaml file for dynamic inventory to target only instances tagged with ConfigureViaAnsible=Yes. This tag should be applied to Web Server 3 and Web Server 4 in the Terraform configuration.
 
-Example aws_ec2.yaml:
+### Running the Playbook
 
-```yaml
-plugin: aws_ec2
-regions:
-  - us-east-1
-filters:
-  instance-state-name: running
-  tag:ConfigureViaAnsible: "Yes"
-keyed_groups:
-  - key: tags.ConfigureViaAnsible
-    prefix: configure
+Execute the playbook from your Cloud9 environment:
+
+```bash
+ansible-playbook -i aws_ec2.yaml configure_webservers.yml
 ```
 
-### Playbook for Configuring Web Servers
+## GitHub Actions Workflow
 
-Create a playbook file named configure_webservers.yml to set up the web servers:
+The CI/CD pipeline is defined in `.github/workflows/terraform.yml` and performs the following:
 
-```yaml
----
-- name: Configure Web Servers (Web Server 3 and 4)
-  hosts: configure_Yes
-  become: yes
-  tasks:
-    - name: Install Apache HTTP Server
-      yum:
-        name: httpd
-        state: present
+- Terraform formatting, initialization, validation, and planning.
+- TFLint and Trivy security scans.
+- It triggers on pushes and pull requests to the main branch.
 
-    - name:
+Refer to the workflow snippet above for AWS credential configuration.
+
+## Cleanup Process
+
+### Destroy Root Module Resources
+
+From the root directory, run:
+
+```bash
+terraform destroy -auto-approve
+```
+
+This command removes resources such as EC2 instances, ALB, and Auto Scaling Group, which depend on the VPC.
+
+### Destroy VPC Module Resources
+
+After destroying the root resources, navigate to the VPC module directory and run:
+
+```bash
+cd modules/vpc
+terraform destroy -auto-approve
+```
+
+This will remove the VPC and associated networking components.
+
+## Additional Notes
+
+- **Remote State**: Ensure the S3 bucket for Terraform state is created and correctly configured.
+- **Website Images**: Manually upload your website images to the designated S3 bucket.
+- **Sensitive Files**: Exclude private key files and Terraform state files by adding them to your .gitignore.
+- **GitHub Actions**: The CI/CD workflow uses AWS credentials stored as repository secrets (or OIDC if configured) to securely execute Terraform commands and scanning tasks.
+
+## Recording Instructions
+
+Prepare a demo video (approximately 15 minutes) that demonstrates:
+
+1. The deployment process.
+2. The configuration of the web servers.
+3. The cleanup process.
+
+## Conclusion
+
+This repository provides a modular, automated approach to deploying a two-tier web application:
+
+- Terraform provisions the necessary infrastructure (VPC, EC2, ALB, Auto Scaling).
+- Ansible configures Web Servers (Web Server 3 & 4) to serve your content.
+- GitHub Actions automates the CI/CD pipeline, including security scans and validations.
+
+Happy automating!

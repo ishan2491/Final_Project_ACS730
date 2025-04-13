@@ -26,8 +26,20 @@ module "ec2" {
   source = "./modules/ec2"
 
   vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
-  public_subnets  = data.terraform_remote_state.vpc.outputs.public_subnets
-  private_subnets = data.terraform_remote_state.vpc.outputs.private_subnets
+  
+  public_subnets = [
+    data.terraform_remote_state.vpc.outputs.public_subnet_1,
+    data.terraform_remote_state.vpc.outputs.public_subnet_2,
+    data.terraform_remote_state.vpc.outputs.public_subnet_3,
+    data.terraform_remote_state.vpc.outputs.public_subnet_4,
+  ]
+
+  private_subnets = [
+    data.terraform_remote_state.vpc.outputs.private_subnet_1,
+    data.terraform_remote_state.vpc.outputs.private_subnet_2,
+  ]
+  /*public_subnets  = data.terraform_remote_state.vpc.outputs.public_subnets
+  private_subnets = data.terraform_remote_state.vpc.outputs.private_subnets*/
 
   instance_type    = "t2.micro"
   min_size         = 1
@@ -40,7 +52,13 @@ module "ec2" {
 module "alb" {
   source                = "./modules/alb"
   vpc_id                = data.terraform_remote_state.vpc.outputs.vpc_id
-  public_subnets        = data.terraform_remote_state.vpc.outputs.public_subnets
+  /*public_subnets        = data.terraform_remote_state.vpc.outputs.public_subnets*/
+  public_subnets        = [
+    data.terraform_remote_state.vpc.outputs.public_subnet_1,
+    data.terraform_remote_state.vpc.outputs.public_subnet_2,
+    data.terraform_remote_state.vpc.outputs.public_subnet_3,
+    data.terraform_remote_state.vpc.outputs.public_subnet_4
+  ]
   lb_name               = "ProdALB"
   environment           = "Prod"
   listener_port         = 80

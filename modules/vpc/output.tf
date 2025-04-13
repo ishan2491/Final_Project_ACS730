@@ -4,16 +4,36 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-# Output Public Subnets
-output "public_subnets" {
-  description = "List of public subnet IDs"
-  value       = aws_subnet.public[*].id
+# Output each public subnet individually for deterministic ordering
+output "public_subnet_1" {
+  description = "Public Subnet 1"
+  value       = aws_subnet.public[0].id
 }
 
-# Output Private Subnets
-output "private_subnets" {
-  description = "List of private subnet IDs"
-  value       = aws_subnet.private[*].id
+output "public_subnet_2" {
+  description = "Public Subnet 2"
+  value       = aws_subnet.public[1].id
+}
+
+output "public_subnet_3" {
+  description = "Public Subnet 3"
+  value       = aws_subnet.public[2].id
+}
+
+output "public_subnet_4" {
+  description = "Public Subnet 4"
+  value       = aws_subnet.public[3].id
+}
+
+# (Optional) Output each private subnet individually as well
+output "private_subnet_1" {
+  description = "Private Subnet 1"
+  value       = aws_subnet.private[0].id
+}
+
+output "private_subnet_2" {
+  description = "Private Subnet 2"
+  value       = aws_subnet.private[1].id
 }
 
 # Output Internet Gateway ID
@@ -27,3 +47,4 @@ output "nat_gateway_ids" {
   description = "List of NAT gateway IDs"
   value       = aws_nat_gateway.nat_gw[*].id
 }
+

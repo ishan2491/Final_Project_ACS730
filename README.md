@@ -194,14 +194,6 @@ This will remove the VPC and associated networking components.
 - **Sensitive Files**: Exclude private key files and Terraform state files by adding them to your .gitignore.
 - **GitHub Actions**: The CI/CD workflow uses AWS credentials stored as repository secrets (or OIDC if configured) to securely execute Terraform commands and scanning tasks.
 
-## Recording Instructions
-
-Prepare a demo video (approximately 15 minutes) that demonstrates:
-
-1. The deployment process.
-2. The configuration of the web servers.
-3. The cleanup process.
-
 ## Conclusion
 
 This repository provides a modular, automated approach to deploying a two-tier web application:
